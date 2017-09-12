@@ -117,6 +117,7 @@ trait EloquentTrait
      */
     public function getAttributes()
     {
-        return array_merge($this->attachedFiles, parent::getAttributes());
+        return parent::getAttributes();
+        //return array_merge($this->attachedFiles, parent::getAttributes());
     }
 }
