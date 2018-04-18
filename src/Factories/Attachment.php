@@ -60,7 +60,9 @@ class Attachment
         $options = array_merge($defaultOptions, (array) $options);
         $storage = $options['storage'];
         $options = array_replace_recursive($config->get($storage), $options);
-        $options['styles'] = array_merge( (array) $options['styles'], ['original' => '']);
+        if ( !isset($options["styles"]["original"]) ) {
+            $options['styles'] = array_merge( (array) $options['styles'], ['original' => '']);
+        }
 
         return $options;
     }
