@@ -1,5 +1,6 @@
 <?php namespace Codesleeve\Stapler;
 
+use Codesleeve\Stapler\Exceptions\FileException;
 use Codesleeve\Stapler\ORM\StaplerableInterface;
 use Codesleeve\Stapler\Storage\StorageableInterface;
 use Codesleeve\Stapler\File\Image\Resizer;
@@ -509,15 +510,19 @@ class Attachment
 	{
 		foreach ($this->queuedForWrite as $style)
 		{
-      		if ($style->dimensions && $this->uploadedFile->isImage()) {
-				$file = $this->resizer->resize($this->uploadedFile, $style);
-			}
-			else {
-				$file = $this->uploadedFile->getRealPath();
-			}
+      		try {
 
-			$filePath = $this->path($style->name);
-			$this->move($file, $filePath);
+                if ($style->dimensions && $this->uploadedFile->isImage()) {
+                    $file = $this->resizer->resize($this->uploadedFile, $style);
+                }
+                else {
+                    $file = $this->uploadedFile->getRealPath();
+                }
+
+                $filePath = $this->path($style->name);
+                $this->move($file, $filePath);
+            } catch (\Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException $e) {
+      		} catch ( FileException $e ) {}
 		}
 
 		$this->queuedForWrite = [];
